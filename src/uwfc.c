@@ -119,7 +119,7 @@ int cgc_validate_header(uwfc_t *header) {
     if (cgc_memcmp(header->sub_chunk2_id, sub_chunk2_id, 4) != 0)
         return BAD_SUB_CHUNK2_ID;
 
-    return header->sub_chunk2_size; //returns track size
+    return header->chunk_size + 8; //returns file size
 }
 
 uwfc_t *cgc_init_track() {
@@ -136,7 +136,7 @@ uwfc_t *cgc_init_track() {
         return NULL;
     }
 
-    track_size = cgc_validate_header(track); //track->sub_chunk2_size (size of data)
+    track_size = cgc_validate_header(track) - UWFC_HEADER_SIZE; //size of file
 
     // track_size is signed int as a mechanism to prevent huge malloc requests
     if (track_size < 0) {
